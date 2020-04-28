@@ -3,11 +3,8 @@ package team1kdictionary.com.onekdictionary;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,37 +12,37 @@ import android.widget.SearchView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import team1kdictionary.com.onekdictionary.databinding.ActivityMainBinding;
+import team1kdictionary.com.onekdictionary.databinding.ActivityHistoryBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity {
 
-    ActivityMainBinding binding;
+    ActivityHistoryBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityHistoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         changeActivity();
     }
 
     private void changeActivity() {
         //Set Home Selected
-        binding.navBottom.setSelectedItemId(R.id.home);
+        binding.navBottom.setSelectedItemId(R.id.history);
         //Perform ItemSelectedListener
         binding.navBottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId())
                 {
-                    case  R.id.home:
+                    case  R.id.history:
                         overridePendingTransition(0,0);
                         return true;
                     case R.id.favorite:
                         startActivity(new Intent(getApplicationContext(), FavoriteActivity.class));
                         overridePendingTransition(0,0);
                         return true;
-                    case  R.id.history:
-                        startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+                    case  R.id.home:
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0,0);
                         return true;
                     case  R.id.setting:
@@ -58,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater= getMenuInflater();
         menuInflater.inflate(R.menu.menu_search, menu);

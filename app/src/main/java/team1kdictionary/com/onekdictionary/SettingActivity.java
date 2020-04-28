@@ -3,41 +3,49 @@ package team1kdictionary.com.onekdictionary;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.SearchView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import team1kdictionary.com.onekdictionary.databinding.ActivityMainBinding;
+import team1kdictionary.com.model.SettingAdapter;
+import team1kdictionary.com.model.Settings;
+import team1kdictionary.com.onekdictionary.databinding.ActivitySettingBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class SettingActivity extends AppCompatActivity {
 
-    ActivityMainBinding binding;
+    ActivitySettingBinding binding;
+    SettingAdapter settingAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivitySettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         changeActivity();
+        settingAdapter = new SettingAdapter(SettingActivity.this, R.layout.item_settings);
+        binding.lvSettings.setAdapter(settingAdapter);
+        addSettingData();
+    }
+
+    private void addSettingData() {
+        String[] arrSetting={"Nhắc nhở học từ vựng", "Chuyển sang giao diện DarkMode", "Báo lỗi", "Thông tin phiên bản"};
+        settingAdapter.add(new Settings(R.drawable.img_alarm, "Nhắc nhở từ vựng"));
+        settingAdapter.add(new Settings(R.drawable.img_darkmode, "Chuyển sang giao diện DarkMode"));
+        settingAdapter.add(new Settings(R.drawable.img_messages, "Báo lỗi"));
+        settingAdapter.add(new Settings(R.drawable.img_info, "Thông tin phiên bản"));
     }
 
     private void changeActivity() {
         //Set Home Selected
-        binding.navBottom.setSelectedItemId(R.id.home);
+        binding.navBottom.setSelectedItemId(R.id.setting);
         //Perform ItemSelectedListener
         binding.navBottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId())
                 {
-                    case  R.id.home:
+                    case  R.id.setting:
                         overridePendingTransition(0,0);
                         return true;
                     case R.id.favorite:
@@ -48,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
                         overridePendingTransition(0,0);
                         return true;
-                    case  R.id.setting:
-                        startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                    case  R.id.home:
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0,0);
                         return true;
                 }
@@ -58,15 +66,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater= getMenuInflater();
-        menuInflater.inflate(R.menu.menu_search, menu);
-
-        final MenuItem mnSearch = menu.findItem(R.id.mnsearch);
-        SearchView searchView = (SearchView) mnSearch.getActionView();
-        searchView.setQueryHint("Nhập từ tìm kiếm ở đây");
-
-        return super.onCreateOptionsMenu(menu);
-    }
 }
