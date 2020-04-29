@@ -26,7 +26,18 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         changeActivity();
+//        destroyPreviousActivity(MainActivity.this);
     }
+
+//    private void destroyPreviousActivity(Activity activity) {
+//        binding.navBottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//
+//                return false;
+//            }
+//        });
+//    }
 
     private void changeActivity() {
         //Set Home Selected
@@ -42,14 +53,17 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.favorite:
                         startActivity(new Intent(getApplicationContext(), FavoriteActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                     case  R.id.history:
                         startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                     case  R.id.setting:
                         startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                 }
@@ -69,4 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
+
+
 }

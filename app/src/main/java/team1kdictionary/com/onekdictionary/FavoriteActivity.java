@@ -39,14 +39,17 @@ public class FavoriteActivity extends AppCompatActivity {
                         return true;
                     case R.id.home:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                     case  R.id.history:
                         startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                     case  R.id.setting:
                         startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                 }

@@ -50,14 +50,17 @@ public class SettingActivity extends AppCompatActivity {
                         return true;
                     case R.id.favorite:
                         startActivity(new Intent(getApplicationContext(), FavoriteActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                     case  R.id.history:
                         startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                     case  R.id.home:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                 }

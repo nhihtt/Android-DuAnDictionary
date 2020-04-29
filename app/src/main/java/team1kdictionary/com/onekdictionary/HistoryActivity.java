@@ -39,14 +39,17 @@ public class HistoryActivity extends AppCompatActivity {
                         return true;
                     case R.id.favorite:
                         startActivity(new Intent(getApplicationContext(), FavoriteActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                     case  R.id.home:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                     case  R.id.setting:
                         startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                        finish();
                         overridePendingTransition(0,0);
                         return true;
                 }
