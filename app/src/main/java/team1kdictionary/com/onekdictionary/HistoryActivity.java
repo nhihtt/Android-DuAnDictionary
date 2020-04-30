@@ -12,10 +12,13 @@ import android.widget.SearchView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import adapter.WordAdapter;
+import team1kdictionary.com.model.Word;
 import team1kdictionary.com.onekdictionary.databinding.ActivityHistoryBinding;
 
 public class HistoryActivity extends AppCompatActivity {
 
+    WordAdapter adapterWord;
     ActivityHistoryBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,7 @@ public class HistoryActivity extends AppCompatActivity {
         binding = ActivityHistoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         changeActivity();
+        addControls();
     }
 
     private void changeActivity() {
@@ -57,15 +61,34 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }
+    //dữ liệu mẫu
+    private void addWords() {
+        Word w=new Word("sada","dscd","dsdsd","sdsd");
+        Word w1=new Word("sdsdsdf","sda","dsdsd","sdsfdgfnhmkhujy");
+        Word w2=new Word("sfgfj","dsd","sdw","asfsdlflfdvd");
+        Word w3=new Word("sadsfsd","dssdsadcd","sdsd","dfdsgfdgfgbfbgf");
+        adapterWord.add(w);
+        adapterWord.add(w1);
+        adapterWord.add(w2);
+        adapterWord.add(w3);
+
+    }
+
+    private void addControls() {
+        //khởi tạo adapter
+        adapterWord=new WordAdapter(HistoryActivity.this, R.layout.word_item);
+        //gán adapter cho listview
+        addWords();
+        binding.gvWordsList.setAdapter(adapterWord);
+
+    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater= getMenuInflater();
         menuInflater.inflate(R.menu.menu_search, menu);
-
         final MenuItem mnSearch = menu.findItem(R.id.mnsearch);
         SearchView searchView = (SearchView) mnSearch.getActionView();
         searchView.setQueryHint("Nhập từ tìm kiếm ở đây");
-
         return super.onCreateOptionsMenu(menu);
     }
 }
