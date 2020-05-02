@@ -5,12 +5,22 @@ public class Word {
     private String pronounce;
     private String type;
     private String meaning;
+    private boolean history;
+
 
     public Word(String eng, String pronounce, String type, String meaning) {
         this.eng = eng;
         this.pronounce = pronounce;
         this.type = type;
         this.meaning = meaning;
+    }
+
+    public boolean isHistory() {
+        return history;
+    }
+
+    public void setHistory(boolean history) {
+        this.history = history;
     }
 
     public String getEng() {
