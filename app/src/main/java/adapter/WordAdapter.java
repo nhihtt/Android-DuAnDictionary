@@ -64,6 +64,9 @@ public class WordAdapter extends BaseAdapter implements Filterable {
     }
 
 
+    /**
+     * @return
+     */
     @NonNull
     @Override
     public Filter getFilter() {
