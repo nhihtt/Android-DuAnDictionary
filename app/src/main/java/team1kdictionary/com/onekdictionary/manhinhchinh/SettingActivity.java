@@ -1,4 +1,4 @@
-package team1kdictionary.com.onekdictionary;
+package team1kdictionary.com.onekdictionary.manhinhchinh;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,8 +9,9 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import team1kdictionary.com.model.SettingAdapter;
+import adapter.SettingAdapter;
 import team1kdictionary.com.model.Settings;
+import team1kdictionary.com.onekdictionary.R;
 import team1kdictionary.com.onekdictionary.databinding.ActivitySettingBinding;
 
 public class SettingActivity extends AppCompatActivity {

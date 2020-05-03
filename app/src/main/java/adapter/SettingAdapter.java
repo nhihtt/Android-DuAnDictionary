@@ -1,4 +1,4 @@
-package team1kdictionary.com.model;
+package adapter;
 
 import android.app.Activity;
 import android.content.Context;

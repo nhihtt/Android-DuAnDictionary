@@ -1,10 +1,15 @@
 package team1kdictionary.com.model;
 
+import android.widget.ImageView;
+
+import team1kdictionary.com.onekdictionary.R;
+
 public class Word {
     private String eng;
     private String pronounce;
     private String type;
     private String meaning;
+    private int isFavorite;
     private boolean history;
 
 
@@ -53,5 +58,13 @@ public class Word {
 
     public void setMeaning(String meaning) {
         this.meaning = meaning;
+    }
+
+    public int getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(int isFavorite) {
+        this.isFavorite = isFavorite;
     }
 }

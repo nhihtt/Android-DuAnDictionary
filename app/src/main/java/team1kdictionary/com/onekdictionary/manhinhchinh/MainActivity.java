@@ -1,28 +1,34 @@
-package team1kdictionary.com.onekdictionary;
+package team1kdictionary.com.onekdictionary.manhinhchinh;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import team1kdictionary.com.model.Word;
+import adapter.WordAdapter;
+import team1kdictionary.com.onekdictionary.R;
 import team1kdictionary.com.onekdictionary.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     String DB_PATH_SUFFIX="/databases/";
     SQLiteDatabase database=null;
     ActivityMainBinding binding;
+    GridView gvDic;
+    WordAdapter allWordAdapter;
+    public static List<Word> itemsWordList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,18 +46,40 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         changeActivity();
         processCopy();
-//        destroyPreviousActivity(MainActivity.this);
+        addControls();
+        addEvents();
     }
 
-//    private void destroyPreviousActivity(Activity activity) {
-//        binding.navBottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//
-//                return false;
-//            }
-//        });
-//    }
+    private void addEvents() {
+        try {
+            displayWordList();
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error " + ex.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void displayWordList() {
+        database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+        Cursor c = database.rawQuery("Select * From data Where _id > 56", null);
+        while (c.moveToNext()) {
+            String word = c.getString(1);
+            String mean = c.getString(2);
+
+            Word vocabulary = new Word(word, null, null, mean);
+            itemsWordList.add(vocabulary);
+//            allWordAdapter.add(vocabulary);
+        }
+        gvDic = findViewById(R.id.gvDic);
+        gvDic.setAdapter(allWordAdapter);
+        c.close();
+    }
+
+    private void addControls() {
+
+        gvDic = findViewById(R.id.gvDic);
+        allWordAdapter = new WordAdapter(MainActivity.this, R.layout.word_item, itemsWordList);
+        gvDic.setAdapter(allWordAdapter);
+    }
 
     private void changeActivity() {
         //Set Home Selected
@@ -84,6 +115,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.mnsearch) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater= getMenuInflater();
         menuInflater.inflate(R.menu.menu_search, menu);
@@ -91,6 +132,19 @@ public class MainActivity extends AppCompatActivity {
         final MenuItem mnSearch = menu.findItem(R.id.mnsearch);
         SearchView searchView = (SearchView) mnSearch.getActionView();
         searchView.setQueryHint("Nhập từ tìm kiếm ở đây");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                allWordAdapter.getFilter().filter(s);
+                return true;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
