@@ -1,12 +1,16 @@
 package team1kdictionary.com.onekdictionary.manhinhchinh;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
     GridView gvDic;
     WordAdapter allWordAdapter;
     public static List<Word> itemsWordList = new ArrayList<>();
+
+    private static int RECOGNIZER_RESULT = 1;
+    private static String SPEECH_TO_TEXT = "";
+    private static Intent speechIntent;
+    private static SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +62,31 @@ public class MainActivity extends AppCompatActivity {
     private void addEvents() {
         try {
             displayWordList();
+            voiceRecognization();
         } catch (Exception ex) {
             Toast.makeText(this, "Error " + ex.toString(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void voiceRecognization() {
+        speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Đang lắng nghe...");
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK && data != null) {
+            ArrayList<String> text_matched = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            SPEECH_TO_TEXT = text_matched.get(0).toString();
+            searchView.setFocusable(true);
+            searchView.setIconified(false);
+            searchView.requestFocusFromTouch();
+            searchView.setQuery(SPEECH_TO_TEXT, false);
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void displayWordList() {
@@ -75,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addControls() {
-
         gvDic = findViewById(R.id.gvDic);
         allWordAdapter = new WordAdapter(MainActivity.this, R.layout.word_item, itemsWordList);
         gvDic.setAdapter(allWordAdapter);
@@ -121,6 +151,10 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.mnsearch) {
             return true;
         }
+        if (id == R.id.mnvoice) {
+            startActivityForResult(speechIntent, RECOGNIZER_RESULT);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -130,8 +164,10 @@ public class MainActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.menu_search, menu);
 
         final MenuItem mnSearch = menu.findItem(R.id.mnsearch);
-        SearchView searchView = (SearchView) mnSearch.getActionView();
+        searchView = (SearchView) mnSearch.getActionView();
         searchView.setQueryHint("Nhập từ tìm kiếm ở đây");
+        searchView.setQuery(SPEECH_TO_TEXT, false);
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
