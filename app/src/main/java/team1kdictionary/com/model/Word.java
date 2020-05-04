@@ -10,23 +10,25 @@ public class Word {
     private String type;
     private String meaning;
     private int isFavorite;
-    private boolean history;
+    private String history;
 
+    public String getHistory() {
+        return history;
+    }
 
-    public Word(String eng, String pronounce, String type, String meaning) {
+    public void setHistory(String history) {
+        this.history = history;
+    }
+
+    public Word(String eng, String pronounce, String type, String meaning ,String history) {
         this.eng = eng;
         this.pronounce = pronounce;
         this.type = type;
         this.meaning = meaning;
+        this.history=history;
     }
 
-    public boolean isHistory() {
-        return history;
-    }
 
-    public void setHistory(boolean history) {
-        this.history = history;
-    }
 
     public String getEng() {
         return eng;

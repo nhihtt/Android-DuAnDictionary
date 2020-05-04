@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.SearchView;
@@ -30,6 +32,7 @@ import team1kdictionary.com.model.Word;
 import adapter.WordAdapter;
 import team1kdictionary.com.onekdictionary.R;
 import team1kdictionary.com.onekdictionary.databinding.ActivityMainBinding;
+import team1kdictionary.com.onekdictionary.hienthitu.HienThiTuActivity;
 
 public class MainActivity extends AppCompatActivity {
     String DATABASE_NAME="TuDienAnhviet.sqlite";
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     GridView gvDic;
     WordAdapter allWordAdapter;
+    public static List<String> tuDaTimKiem=new ArrayList<>();
     public static List<Word> itemsWordList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +69,10 @@ public class MainActivity extends AppCompatActivity {
             String word = c.getString(1);
             String mean = c.getString(2);
 
-            Word vocabulary = new Word(word, null, null, mean);
+            Word vocabulary = new Word(word, null, null, mean,null);
             itemsWordList.add(vocabulary);
-//            allWordAdapter.add(vocabulary);
+//           allWordAdapter.add(vocabulary);
+
         }
         gvDic = findViewById(R.id.gvDic);
         gvDic.setAdapter(allWordAdapter);
@@ -112,7 +117,11 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -136,12 +145,15 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
+                tuDaTimKiem.add(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
                 allWordAdapter.getFilter().filter(s);
+
                 return true;
             }
         });

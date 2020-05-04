@@ -4,30 +4,47 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.GridView;
 import android.widget.SearchView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import adapter.WordAdapter;
 import team1kdictionary.com.model.Word;
 import team1kdictionary.com.onekdictionary.R;
 import team1kdictionary.com.onekdictionary.databinding.ActivityHistoryBinding;
 
+
+import static team1kdictionary.com.onekdictionary.manhinhchinh.MainActivity.tuDaTimKiem;
+
 public class HistoryActivity extends AppCompatActivity {
 
     WordAdapter adapterWord;
     ActivityHistoryBinding binding;
+    SQLiteDatabase database=null;
+    String DATABASE_NAME="TuDienAnhviet.sqlite";
+    String DB_PATH_SUFFIX="/databases/";
+    GridView gvWordList;
+    WordAdapter allWordAdapter;
+    public static List<Word> itemsWordList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityHistoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         changeActivity();
+        addWords();
         addControls();
+
     }
 
     private void changeActivity() {
@@ -62,16 +79,24 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }
-    //dữ liệu mẫu
+
     private void addWords() {
-//        Word w=new Word("sada","dscd","dsdsd","sdsd");
-//        Word w1=new Word("sdsdsdf","sda","dsdsd","sdsfdgfnhmkhujy");
-//        Word w2=new Word("sfgfj","dsd","sdw","asfsdlflfdvd");
-//        Word w3=new Word("sadsfsd","dssdsadcd","sdsd","dfdsgfdgfgbfbgf");
-//        adapterWord.add(w);
-//        adapterWord.add(w1);
-//        adapterWord.add(w2);
-//        adapterWord.add(w3);
+        database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+
+        Cursor c = database.rawQuery("Select * From data Where _id > 56", null);
+        while (c.moveToNext()) {
+            String word = c.getString(1);
+            String mean = c.getString(2);
+            if(tuDaTimKiem.contains(word)){
+                Word vocabulary = new Word(word, null, null, mean,null);
+                itemsWordList.add(vocabulary);
+//           allWordAdapter.add(vocabulary);
+            }
+
+
+        }
+
+        c.close();
 
     }
 
@@ -82,6 +107,9 @@ public class HistoryActivity extends AppCompatActivity {
 //        addWords();
 //        binding.gvWordsList.setAdapter(adapterWord);
 
+        gvWordList = findViewById(R.id.gvWordsList);
+        allWordAdapter = new WordAdapter(HistoryActivity.this, R.layout.word_item, itemsWordList);
+        gvWordList.setAdapter(allWordAdapter);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
