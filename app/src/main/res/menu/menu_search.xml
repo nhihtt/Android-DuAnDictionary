@@ -8,9 +8,8 @@
         app:actionViewClass="android.widget.SearchView"
         android:title="Search" />
     <item
-        android:id="@+id/voice"
+        android:id="@+id/mnvoice"
         android:icon="@drawable/ic_keyboard_voice"
         app:showAsAction="always"
-        android:title="Voice"
-        />
+        android:title="Voice" />
 </menu>
