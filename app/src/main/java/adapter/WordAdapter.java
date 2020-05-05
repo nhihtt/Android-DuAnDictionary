@@ -26,6 +26,9 @@ public class WordAdapter extends BaseAdapter implements Filterable {
     private List<Word> itemsWordList;
     private List<Word> itemsWordListFilter;
 
+    public WordAdapter() {
+    }
+
     public WordAdapter(@NonNull Activity context, int resource, List<Word> itemsWordList) {
         this.context=context;
         this.resource=resource;
@@ -55,7 +58,6 @@ public class WordAdapter extends BaseAdapter implements Filterable {
         ImageView imgLove = view.findViewById(R.id.imgLove);
         TextView txtWord = view.findViewById(R.id.txtWord);
         TextView txtMean = view.findViewById(R.id.txtMean);
-
         imgLove.setImageResource(itemsWordListFilter.get(position).getIsFavorite());
         txtWord.setText(itemsWordListFilter.get(position).getEng());
         txtMean.setText(itemsWordListFilter.get(position).getMeaning());

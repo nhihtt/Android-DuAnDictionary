@@ -19,7 +19,6 @@ public class HienThiTuActivity extends AppCompatActivity {
     }
     private void xuLyLayDuLieuTuBenKia() {
         Intent intent= getIntent();
-
         binding.txtMean.setText(intent.getStringExtra("txtWord"));
 
     }
