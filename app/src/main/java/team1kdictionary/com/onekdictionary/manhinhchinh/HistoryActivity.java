@@ -90,6 +90,8 @@ public class HistoryActivity extends AppCompatActivity {
             if(tuDaTimKiem.contains(word)){
                 Word vocabulary = new Word(word, null, null, mean,null);
                 itemsWordList.add(vocabulary);
+                tuDaTimKiem.remove(word);
+
 //           allWordAdapter.add(vocabulary);
             }
 
