@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayWordList() {
+        itemsWordList.clear();
         database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
         Cursor c = database.rawQuery("Select * From data Where _id > 56", null);
         while (c.moveToNext()) {
