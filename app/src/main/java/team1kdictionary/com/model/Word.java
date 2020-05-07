@@ -5,12 +5,21 @@ import android.widget.ImageView;
 import team1kdictionary.com.onekdictionary.R;
 
 public class Word {
+    private Integer idword;
     private String eng;
     private String pronounce;
     private String type;
     private String meaning;
     private int isFavorite;
     private String history;
+
+    public Integer getIdword() {
+        return idword;
+    }
+
+    public void setIdword(Integer idword) {
+        this.idword = idword;
+    }
 
     public String getHistory() {
         return history;
@@ -20,7 +29,7 @@ public class Word {
         this.history = history;
     }
 
-    public Word(String eng, String pronounce, String type, String meaning ,String history) {
+    public Word(int idword,String eng, String pronounce, String type, String meaning ,String history) {
         this.eng = eng;
         this.pronounce = pronounce;
         this.type = type;

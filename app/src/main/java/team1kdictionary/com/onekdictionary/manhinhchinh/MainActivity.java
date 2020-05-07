@@ -97,10 +97,11 @@ public class MainActivity extends AppCompatActivity {
         database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
         Cursor c = database.rawQuery("Select * From data Where _id > 56", null);
         while (c.moveToNext()) {
+            int id=c.getInt(0);
             String word = c.getString(1);
             String mean = c.getString(2);
 
-            Word vocabulary = new Word(word, null, null, mean,null);
+            Word vocabulary = new Word(id,word, null, null, mean,null);
             itemsWordList.add(vocabulary);
 //           allWordAdapter.add(vocabulary);
 
@@ -147,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
     }
 
 
@@ -179,9 +182,15 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-
+                try{
+                database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+                database.execSQL("Update data SET history=? Where word=?",new String[]{"1",query});
                 tuDaTimKiem.add(query);
+
+                }
+                catch (Exception ex){
+                    Log.e("LOI",ex.toString());
+                }
                 return false;
             }
 

@@ -81,19 +81,19 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void addWords() {
+        itemsWordList.clear();
         database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
 
-        Cursor c = database.rawQuery("Select * From data Where _id > 56", null);
+        Cursor c = database.rawQuery("Select * From data Where history = 1", null);
         while (c.moveToNext()) {
+            int id=c.getInt(0);
             String word = c.getString(1);
             String mean = c.getString(2);
-            if(tuDaTimKiem.contains(word)){
-                Word vocabulary = new Word(word, null, null, mean,null);
-                itemsWordList.add(vocabulary);
-                tuDaTimKiem.remove(word);
 
+                Word vocabulary = new Word(id,word, null, null, mean,null);
+                itemsWordList.add(vocabulary);
 //           allWordAdapter.add(vocabulary);
-            }
+
 
 
         }
