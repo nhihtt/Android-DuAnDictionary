@@ -94,8 +94,6 @@ public class HistoryActivity extends AppCompatActivity {
                 itemsWordList.add(vocabulary);
 //           allWordAdapter.add(vocabulary);
 
-
-
         }
 
         c.close();

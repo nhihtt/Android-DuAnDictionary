@@ -3,7 +3,6 @@ package adapter;
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +53,9 @@ public class WordAdapter extends BaseAdapter implements Filterable {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = context.getLayoutInflater().inflate(R.layout.word_item, null);
 
+
         ImageView imgLove = view.findViewById(R.id.imgLove);
-        TextView txtWord = view.findViewById(R.id.txtWord);
+        TextView txtWord = view.findViewById(R.id.tvWord);
         TextView txtMean = view.findViewById(R.id.txtMean);
         imgLove.setImageResource(itemsWordListFilter.get(position).getIsFavorite());
         txtWord.setText(itemsWordListFilter.get(position).getEng());
@@ -96,11 +95,11 @@ public class WordAdapter extends BaseAdapter implements Filterable {
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-
                 itemsWordListFilter = (List<Word>) results.values;
                 notifyDataSetChanged();
             }
         };
         return filter;
     }
+
 }

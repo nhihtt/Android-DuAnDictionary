@@ -4,12 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.Menu;
@@ -17,9 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,21 +30,25 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import team1kdictionary.com.model.MyCustomDialog;
 import team1kdictionary.com.model.Word;
 import adapter.WordAdapter;
 import team1kdictionary.com.onekdictionary.R;
 import team1kdictionary.com.onekdictionary.databinding.ActivityMainBinding;
-import team1kdictionary.com.onekdictionary.hienthitu.HienThiTuActivity;
+import team1kdictionary.com.onekdictionary.databinding.CustomDialogBinding;
 
 public class MainActivity extends AppCompatActivity {
     String DATABASE_NAME="TuDienAnhviet.sqlite";
     String DB_PATH_SUFFIX="/databases/";
     SQLiteDatabase database=null;
     ActivityMainBinding binding;
+    CustomDialogBinding customDialogBinding;
     GridView gvDic;
     WordAdapter allWordAdapter;
     public static List<String> tuDaTimKiem=new ArrayList<>();
     public static List<Word> itemsWordList = new ArrayList<>();
+
+    public static Word itemSelected;
 
     private static int RECOGNIZER_RESULT = 1;
     private static String SPEECH_TO_TEXT = "";
@@ -116,6 +118,19 @@ public class MainActivity extends AppCompatActivity {
         gvDic = findViewById(R.id.gvDic);
         allWordAdapter = new WordAdapter(MainActivity.this, R.layout.word_item, itemsWordList);
         gvDic.setAdapter(allWordAdapter);
+        gvDic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MyCustomDialog myDialog = new MyCustomDialog(MainActivity.this);
+                myDialog.show();
+                itemSelected = itemsWordList.get(position);
+                TextView tvWord = myDialog.findViewById(R.id.tvWord);
+                tvWord.setText(itemSelected.getEng().toString());
+                TextView tvInfo = myDialog.findViewById(R.id.tvInfo);
+                tvInfo.setText(itemSelected.getMeaning().toString());
+//                Toast.makeText(MainActivity.this, "position: "+itemSelected.getEng().toString(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void changeActivity() {
