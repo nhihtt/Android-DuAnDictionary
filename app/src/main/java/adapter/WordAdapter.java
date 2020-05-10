@@ -41,7 +41,7 @@ public class WordAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return position;
     }
 
     @Override
@@ -89,7 +89,6 @@ public class WordAdapter extends BaseAdapter implements Filterable {
                         filterResults.values = resultData;
                     }
                 }
-
                 return filterResults;
             }
 

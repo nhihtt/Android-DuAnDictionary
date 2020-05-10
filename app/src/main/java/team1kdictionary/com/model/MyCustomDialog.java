@@ -2,6 +2,8 @@ package team1kdictionary.com.model;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
+import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.Button;
@@ -9,18 +11,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import team1kdictionary.com.onekdictionary.R;
+import team1kdictionary.com.onekdictionary.manhinhchinh.MainActivity;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MyCustomDialog extends Dialog {
     ImageView imgFav, imgSound;
     TextView tvWord, tvInfo, txtClose;
-    Button btnTextToSpeech;
+    Button btnSpeechToText;
 
     TextToSpeech textToSpeech;
     Integer dem = 0;
+
+    int RECOGNIZER_RESULT = 1;
+    String SPEECH_TO_TEXT = "";
+    Intent speechIntent;
 
     Activity context;
 
@@ -72,7 +83,7 @@ public class MyCustomDialog extends Dialog {
         tvWord = findViewById(R.id.tvWord);
         tvInfo = findViewById(R.id.tvInfo);
         txtClose = findViewById(R.id.txtClose);
-        btnTextToSpeech = findViewById(R.id.btnTestSpeak);
+        btnSpeechToText = findViewById(R.id.btnTestSpeak);
         setTitle("Word");
         setCanceledOnTouchOutside(true);
 
@@ -85,5 +96,8 @@ public class MyCustomDialog extends Dialog {
                 }
             }
         });
+
     }
+
+
 }
