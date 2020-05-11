@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,17 +16,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import team1kdictionary.com.onekdictionary.R;
 import team1kdictionary.com.onekdictionary.manhinhchinh.MainActivity;
 
 import static android.app.Activity.RESULT_OK;
+import static team1kdictionary.com.onekdictionary.manhinhchinh.MainActivity.itemSelected;
 
 public class MyCustomDialog extends Dialog {
     ImageView imgFav, imgSound;
     TextView tvWord, tvInfo, txtClose;
     Button btnSpeechToText;
+    GridView gvDic;
 
     TextToSpeech textToSpeech;
     Integer dem = 0;
@@ -99,5 +104,36 @@ public class MyCustomDialog extends Dialog {
 
     }
 
+    public static void setWordForDialog(final List<Word> listItem, GridView gvDic, final Activity context) {
+        gvDic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                Dialog myDialog = new MyCustomDialog(context);
+                myDialog.show();
+                // Set item selected
+                // itemsWWordList là List<Word> lưu toàn bộ từ trong database
+                // itemSelected là kiểu Word
+                itemSelected = listItem.get(position);
 
+                String word = itemSelected.getEng();
+                String mean = itemSelected.getMeaning();
+
+                TextView tvWord = myDialog.findViewById(R.id.tvWord);
+                TextView tvInfo = myDialog.findViewById(R.id.tvInfo);
+                tvWord.setText(word);
+                tvInfo.setText(mean);
+                MainActivity.compareWord = word;
+
+                // Set SpeechToText for button on popUp
+                Button btnSpeechToText = myDialog.findViewById(R.id.btnTestSpeak);
+                btnSpeechToText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        context.startActivityForResult(MainActivity.speechIntent, MainActivity.RECOGNIZER_RESULT);
+                    }
+                });
+            }
+        });
+
+    }
 }

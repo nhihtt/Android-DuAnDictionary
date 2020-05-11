@@ -3,6 +3,7 @@ package team1kdictionary.com.onekdictionary.manhinhchinh;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     CustomDialogBinding customDialogBinding;
     GridView gvDic;
     WordAdapter allWordAdapter;
-    String compareWord = "";
+    public static String compareWord = "";
 
     public static List<String> tuDaTimKiem=new ArrayList<>();
     public static List<Word> itemsWordList = new ArrayList<>();
@@ -60,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> text_matched;
     public static MyCustomDialog myDialog;
 
-    private static int RECOGNIZER_RESULT = 1;
-    private static String SPEECH_TO_TEXT = "";
-    private static Intent speechIntent;
+    public static int RECOGNIZER_RESULT = 1;
+    public static String SPEECH_TO_TEXT = "";
+    public static Intent speechIntent;
     private static SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,40 +163,11 @@ public class MainActivity extends AppCompatActivity {
         gvDic = findViewById(R.id.gvDic);
         allWordAdapter = new WordAdapter(MainActivity.this, R.layout.word_item, itemsWordList);
         gvDic.setAdapter(allWordAdapter);
-        setWordForDialog(itemsWordList);
+//        setWordForDialog(itemsWordList);
+        MyCustomDialog.setWordForDialog(itemsWordList, gvDic, MainActivity.this);
+
     }
 
-    private void setWordForDialog(final List<Word> listItem) {
-        gvDic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                myDialog = new MyCustomDialog(MainActivity.this);
-                myDialog.show();
-                // Set item selected
-                // itemsWWordList là List<Word> lưu toàn bộ từ trong database
-                // itemSelected là kiểu Word
-                itemSelected = listItem.get(position);
-
-                String word = itemSelected.getEng();
-                String mean = itemSelected.getMeaning();
-
-                TextView tvWord = myDialog.findViewById(R.id.tvWord);
-                TextView tvInfo = myDialog.findViewById(R.id.tvInfo);
-                tvWord.setText(word);
-                tvInfo.setText(mean);
-                compareWord = word;
-
-                // Set SpeechToText for button on popUp
-                Button btnSpeechToText = myDialog.findViewById(R.id.btnTestSpeak);
-                btnSpeechToText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivityForResult(speechIntent, RECOGNIZER_RESULT);
-                    }
-                });
-            }
-        });
-    }
 
     private void changeActivity() {
         //Set Home Selected
@@ -270,10 +242,11 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < itemsWordList.size(); i++) {
                         if (itemsWordList.get(i).getEng().startsWith(query)) {
                             tempList.add(itemsWordList.get(i));
-                            Toast.makeText(MainActivity.this, "Lưu thành công", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, "Lưu thành công", Toast.LENGTH_SHORT).show();
                         }
                     }
-                    setWordForDialog(tempList);
+//                    setWordForDialog(tempList);
+                    MyCustomDialog.setWordForDialog(tempList, gvDic, MainActivity.this);
                 }
                 catch (Exception ex){
                     Log.e("LOI",ex.toString());
@@ -284,6 +257,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 allWordAdapter.getFilter().filter(s);
+                if (s.compareTo("") == 0) {
+                    MyCustomDialog.setWordForDialog(itemsWordList, gvDic, MainActivity.this);
+                } else {
+                    MyCustomDialog.setWordForDialog(tempList, gvDic, MainActivity.this);
+                }
                 return true;
             }
         });

@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.GridView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.WordAdapter;
+import team1kdictionary.com.model.MyCustomDialog;
 import team1kdictionary.com.model.Word;
 import team1kdictionary.com.onekdictionary.R;
 import team1kdictionary.com.onekdictionary.databinding.ActivityHistoryBinding;
@@ -36,6 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
     GridView gvWordList;
     WordAdapter allWordAdapter;
     public static List<Word> itemsWordList = new ArrayList<>();
+    private static List<Word> tempHistoryWord = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +113,7 @@ public class HistoryActivity extends AppCompatActivity {
         gvWordList = findViewById(R.id.gvWordsList);
         allWordAdapter = new WordAdapter(HistoryActivity.this, R.layout.word_item, itemsWordList);
         gvWordList.setAdapter(allWordAdapter);
+        MyCustomDialog.setWordForDialog(itemsWordList, gvWordList, HistoryActivity.this);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -118,6 +122,29 @@ public class HistoryActivity extends AppCompatActivity {
         final MenuItem mnSearch = menu.findItem(R.id.mnsearch);
         SearchView searchView = (SearchView) mnSearch.getActionView();
         searchView.setQueryHint("Nhập từ tìm kiếm ở đây");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                for (int i = 0; i < itemsWordList.size(); i++) {
+                    if (itemsWordList.get(i).getEng().startsWith(query)) {
+                        tempHistoryWord.add(itemsWordList.get(i));
+                    }
+                }
+                MyCustomDialog.setWordForDialog(tempHistoryWord, gvWordList, HistoryActivity.this);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                allWordAdapter.getFilter().filter(s);
+                if (s.compareTo("") == 0) {
+                    MyCustomDialog.setWordForDialog(itemsWordList, gvWordList, HistoryActivity.this);
+                }
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 }
