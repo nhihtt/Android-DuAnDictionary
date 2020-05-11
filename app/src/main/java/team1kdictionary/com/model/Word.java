@@ -29,7 +29,7 @@ public class Word {
         this.history = history;
     }
 
-    public Word(int idword,String eng, String pronounce, String type, String meaning ,String history) {
+    public Word(String eng, String pronounce, String type, String meaning, String history) {
         this.eng = eng;
         this.pronounce = pronounce;
         this.type = type;

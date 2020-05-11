@@ -35,7 +35,7 @@ public class HistoryActivity extends AppCompatActivity {
     String DB_PATH_SUFFIX="/databases/";
     GridView gvWordList;
     WordAdapter allWordAdapter;
-    public static List<Word> itemsWordListHistory = new ArrayList<>();
+    public static List<Word> itemsWordList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +81,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void addWords() {
-        itemsWordListHistory.clear();
+        itemsWordList.clear();
         database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
 
         Cursor c = database.rawQuery("Select * From data Where history = 1", null);
@@ -91,7 +91,7 @@ public class HistoryActivity extends AppCompatActivity {
             String mean = c.getString(2);
 
                 Word vocabulary = new Word(id,word, null, null, mean,null);
-                itemsWordListHistory.add(vocabulary);
+                itemsWordList.add(vocabulary);
 //           allWordAdapter.add(vocabulary);
 
 
@@ -110,7 +110,7 @@ public class HistoryActivity extends AppCompatActivity {
 //        binding.gvWordsList.setAdapter(adapterWord);
 
         gvWordList = findViewById(R.id.gvWordsList);
-        allWordAdapter = new WordAdapter(HistoryActivity.this, R.layout.word_item, itemsWordListHistory);
+        allWordAdapter = new WordAdapter(HistoryActivity.this, R.layout.word_item, itemsWordList);
         gvWordList.setAdapter(allWordAdapter);
     }
 
