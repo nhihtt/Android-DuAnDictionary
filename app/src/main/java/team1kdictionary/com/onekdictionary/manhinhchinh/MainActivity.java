@@ -3,22 +3,16 @@ package team1kdictionary.com.onekdictionary.manhinhchinh;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -40,8 +34,6 @@ import adapter.WordAdapter;
 import team1kdictionary.com.onekdictionary.R;
 import team1kdictionary.com.onekdictionary.databinding.ActivityMainBinding;
 import team1kdictionary.com.onekdictionary.databinding.CustomDialogBinding;
-
-import static android.speech.SpeechRecognizer.RESULTS_RECOGNITION;
 
 public class MainActivity extends AppCompatActivity {
     String DATABASE_NAME="TuDienAnhviet.sqlite";

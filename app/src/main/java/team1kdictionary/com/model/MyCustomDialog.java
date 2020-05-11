@@ -26,7 +26,7 @@ import static android.app.Activity.RESULT_OK;
 import static team1kdictionary.com.onekdictionary.manhinhchinh.MainActivity.itemSelected;
 
 public class MyCustomDialog extends Dialog {
-    ImageView imgFav, imgSound;
+    ImageView imgFav, imgSound, imgFolder;
     TextView tvWord, tvInfo, txtClose;
     Button btnSpeechToText;
     GridView gvDic;
@@ -79,12 +79,21 @@ public class MyCustomDialog extends Dialog {
             }
         });
 
+        imgFolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog folderDialog = new FolderCustomDialog(context);
+                folderDialog.show();
+            }
+        });
+
 
     }
 
     private void addControls() {
         imgFav = findViewById(R.id.imgFav);
         imgSound = findViewById(R.id.imgSound);
+        imgFolder = findViewById(R.id.imgFolder);
         tvWord = findViewById(R.id.tvWord);
         tvInfo = findViewById(R.id.tvInfo);
         txtClose = findViewById(R.id.txtClose);
@@ -108,7 +117,8 @@ public class MyCustomDialog extends Dialog {
         gvDic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                Dialog myDialog = new MyCustomDialog(context);
+//                Intent intent = new Intent(context, MyCustomDialog.class);
+                final Dialog myDialog = new MyCustomDialog(context);
                 myDialog.show();
                 // Set item selected
                 // itemsWWordList là List<Word> lưu toàn bộ từ trong database
@@ -129,6 +139,9 @@ public class MyCustomDialog extends Dialog {
                 btnSpeechToText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+//                        myDialog.dismiss();
+//                        Dialog newDialog = new FolderCustomDialog(context);
+//                        newDialog.show();
                         context.startActivityForResult(MainActivity.speechIntent, MainActivity.RECOGNIZER_RESULT);
                     }
                 });
