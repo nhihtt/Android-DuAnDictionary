@@ -4,22 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,25 +28,34 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import team1kdictionary.com.model.MyCustomDialog;
 import team1kdictionary.com.model.Word;
 import adapter.WordAdapter;
 import team1kdictionary.com.onekdictionary.R;
 import team1kdictionary.com.onekdictionary.databinding.ActivityMainBinding;
-import team1kdictionary.com.onekdictionary.hienthitu.HienThiTuActivity;
+import team1kdictionary.com.onekdictionary.databinding.CustomDialogBinding;
 
 public class MainActivity extends AppCompatActivity {
     String DATABASE_NAME="TuDienAnhviet.sqlite";
     String DB_PATH_SUFFIX="/databases/";
     SQLiteDatabase database=null;
     ActivityMainBinding binding;
+    CustomDialogBinding customDialogBinding;
     GridView gvDic;
     WordAdapter allWordAdapter;
+    public static String compareWord = "";
+
     public static List<String> tuDaTimKiem=new ArrayList<>();
     public static List<Word> itemsWordList = new ArrayList<>();
+    public static List<Word> tempList = new ArrayList<>();
 
-    private static int RECOGNIZER_RESULT = 1;
-    private static String SPEECH_TO_TEXT = "";
-    private static Intent speechIntent;
+    public static Word itemSelected;
+    ArrayList<String> text_matched;
+    public static MyCustomDialog myDialog;
+
+    public static int RECOGNIZER_RESULT = 1;
+    public static String SPEECH_TO_TEXT = "";
+    public static Intent speechIntent;
     private static SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,40 +72,76 @@ public class MainActivity extends AppCompatActivity {
         try {
             displayWordList();
             voiceRecognization();
+            checkPronounce();
         } catch (Exception ex) {
             Toast.makeText(this, "Error " + ex.toString(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void checkPronounce() {
+
     }
 
     private void voiceRecognization() {
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Đang lắng nghe...");
+        speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK && data != null) {
-            ArrayList<String> text_matched = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            text_matched = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             SPEECH_TO_TEXT = text_matched.get(0).toString();
             searchView.setFocusable(true);
             searchView.setIconified(false);
             searchView.requestFocusFromTouch();
             searchView.setQuery(SPEECH_TO_TEXT, false);
-        }
+            TextView txtScore = myDialog.findViewById(R.id.txtScore);
+            String text = "";
+            for (String result : text_matched) {
+                text += result + " ";
+            }
+//            txtScore.setText(text);
+            if (spaceCount(text) == 0 && text.contains(compareWord)) {
+                txtScore.setText("100% RẤT TỐT");
+            } else if (spaceCount(text) == 1 && text.contains(compareWord)) {
+                txtScore.setText("80% TỐT");
+            } else if (spaceCount(text) == 2 && text.contains(compareWord)) {
+                txtScore.setText("60% TẠM ỔN");
+            } else if (spaceCount(text) == 3 && text.contains(compareWord)) {
+                txtScore.setText("50% HÃY TẬP LUYỆN THÊM");
+            } else if (spaceCount(text) == 4 && text.contains(compareWord)) {
+                txtScore.setText("30% HÃY TẬP LUYỆN THÊM");
+            } else if (text.contains(compareWord) == false) {
+                txtScore.setText("HÃY TẬP XEM LẠI PHÁT ÂM");
+            }
 
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private int spaceCount(String str) {
+        int spaceCount = 0;
+        for (char c : str.toCharArray()) {
+            if (c == ' ') {
+                spaceCount++;
+            }
+        }
+        return spaceCount;
+    }
+
     private void displayWordList() {
+        itemsWordList.clear();
         database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
         Cursor c = database.rawQuery("Select * From data Where _id > 56", null);
         while (c.moveToNext()) {
             String word = c.getString(1);
             String mean = c.getString(2);
 
-            Word vocabulary = new Word(word, null, null, mean,null);
+            Word vocabulary = new Word(word, null, null, mean, null);
             itemsWordList.add(vocabulary);
 //           allWordAdapter.add(vocabulary);
 
@@ -114,7 +155,11 @@ public class MainActivity extends AppCompatActivity {
         gvDic = findViewById(R.id.gvDic);
         allWordAdapter = new WordAdapter(MainActivity.this, R.layout.word_item, itemsWordList);
         gvDic.setAdapter(allWordAdapter);
+//        setWordForDialog(itemsWordList);
+        MyCustomDialog.setWordForDialog(itemsWordList, gvDic, MainActivity.this);
+
     }
+
 
     private void changeActivity() {
         //Set Home Selected
@@ -147,8 +192,9 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-    }
 
+
+    }
 
 
     @Override
@@ -174,25 +220,43 @@ public class MainActivity extends AppCompatActivity {
         searchView = (SearchView) mnSearch.getActionView();
         searchView.setQueryHint("Nhập từ tìm kiếm ở đây");
         searchView.setQuery(SPEECH_TO_TEXT, false);
+        searchView.setIconifiedByDefault(false);
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-
-                tuDaTimKiem.add(query);
+                try{
+                    //Lưu từ đã search vào history
+                    database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+                    database.execSQL("Update data SET history=? Where word=?", new String[]{"1", query});
+                    tuDaTimKiem.add(query);
+                    for (int i = 0; i < itemsWordList.size(); i++) {
+                        if (itemsWordList.get(i).getEng().startsWith(query)) {
+                            tempList.add(itemsWordList.get(i));
+//                            Toast.makeText(MainActivity.this, "Lưu thành công", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+//                    setWordForDialog(tempList);
+                    MyCustomDialog.setWordForDialog(tempList, gvDic, MainActivity.this);
+                }
+                catch (Exception ex){
+                    Log.e("LOI",ex.toString());
+                }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
                 allWordAdapter.getFilter().filter(s);
-
+                if (s.compareTo("") == 0) {
+                    MyCustomDialog.setWordForDialog(itemsWordList, gvDic, MainActivity.this);
+                } else {
+                    MyCustomDialog.setWordForDialog(tempList, gvDic, MainActivity.this);
+                }
                 return true;
             }
         });
-
         return super.onCreateOptionsMenu(menu);
     }
 
